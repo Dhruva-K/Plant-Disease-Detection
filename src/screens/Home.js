@@ -1,7 +1,87 @@
 import React from 'react'
-import {View,Text, Image, Button} from 'react-native'
+import {View,Text, Image, Button,StyleSheet} from 'react-native'
 import {TextInput, ScrollView,TouchableOpacity } from 'react-native-gesture-handler'
 import { LinearGradient } from 'expo-linear-gradient'
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+
+TouchableOpacity.defaultProps = { activeOpacity: 0.7};
+
+const styles = StyleSheet.create({
+    screenContainer: {
+      
+        marginTop: 120,
+       marginLeft: -30,
+        width: "80%",
+       justifyContent: "center",
+       alignItems:'center',
+       position:"absolute",
+        padding:17,
+
+    },
+    screenContainer2: {
+        marginTop: 120,
+        marginLeft: 150,
+        width: "80%",
+       justifyContent: "center",
+       alignItems:'center',
+       position:"absolute",
+        padding:17,
+        
+    },
+    appButtonContainer: {
+       
+        width:"80%",
+      elevation: 8,
+      backgroundColor: "#009688",
+      borderRadius: 25,
+      paddingVertical: 10,
+      paddingHorizontal: 30
+    },
+
+    appButtonText: {
+      fontSize: 15,
+      color: "#fff",
+      fontWeight: "bold",
+      alignSelf: "center",
+      textTransform: "uppercase"
+    }
+  });
+
+const AppButton = ({ onPress, title }) => (
+    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
+        <Text style={styles.appButtonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+
+const pickFromGallery = async ()=>{
+    const {granted} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    if(granted){
+         let data =  await ImagePicker.launchImageLibraryAsync({
+              mediaTypes:ImagePicker.MediaTypeOptions.Images,
+              allowsEditing:true,
+              aspect:[1,1],
+              quality:0.5
+          })
+       
+    }else{
+       Alert.alert("you need to give up permission to work")
+    }
+ }
+ const pickFromCamera = async ()=>{
+    const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
+    if(granted){
+         let data =  await ImagePicker.launchCameraAsync({
+              mediaTypes:ImagePicker.MediaTypeOptions.Images,
+              allowsEditing:true,
+              aspect:[1,1],
+              quality:0.5
+          })
+      
+    }else{
+       Alert.alert("you need to give up permission to work")
+    }
+ }
 
 const Home = () =>{
     return(
@@ -65,7 +145,7 @@ const Home = () =>{
                         style={{
                             fontWeight:"bold",
                             fontSize:18,
-                            width:260
+                            width:261
                         }}
                    />
                    <Image
@@ -74,38 +154,28 @@ const Home = () =>{
                    />
                </View>
             </LinearGradient>
+            
             <View style={{
                 backgroundColor:"#FFF",
-                height: "25%",
-                paddingHorizontal:25,
+                height: "27%",
+                paddingHorizontal:30,
                 marginHorizontal: 10,
                 borderRadius:10,
                 marginTop: 40,
-                flexDirection:"row",
-              
-                
+               
             }}>
-                <Text style={{
-                    fontSize: 15,
-                    color: "#242424"
-                }}>Process</Text>
-                 <Text style={{
-                     marginLeft: 50,
-                    fontSize: 15,
-                    color: "#242424"
-                }}>step 2</Text>
-                {/* <Button style={{
-                     backgroundColor:"#FFF",
-                paddingVertical:75,
-                paddingHorizontal:25,
-                marginHorizontal: 10,
-                borderRadius:10,
-                marginTop: 40,
-                flexDirection:"row",
-                alignItems:"center"
-                }}>
+               
 
-                </Button> */}
+                <View style={styles.screenContainer}>
+                    <AppButton title="Camera" size="sm" backgroundColor="#007bff" onPress={() => pickFromCamera()}  />
+                
+                    </View>
+
+                    <View style={styles.screenContainer2}>
+                    <AppButton title="Gallery" size="sm" backgroundColor="#007bff" onPress={() => pickFromGallery()}  />
+                    </View>
+                
+               
                 
             </View>
             <LinearGradient
