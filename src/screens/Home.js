@@ -1,52 +1,42 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text, Image, Button,StyleSheet} from 'react-native'
 import {TextInput, ScrollView,TouchableOpacity } from 'react-native-gesture-handler'
 import { LinearGradient } from 'expo-linear-gradient'
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import * as tf from '@tensorflow/tfjs';
+import { fetch, bundleResourceIO, decodeJpeg } from '@tensorflow/tfjs-react-native';
+import * as jpeg from 'jpeg-js'
+import * as FileSystem from 'expo-file-system';
+import { image } from '@tensorflow/tfjs';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+   } from 'react-native-responsive-screen'
+
+function Home(){
+
+    // const [disease,setDisease]  = useState("Disease could not be identified");
+    const [image,setImage] = useState("")
+    const [leafDetector, setleafDetector] = useState("")
+  useEffect(()=>{
+    async function loadModel(){
+      const tfReady = await tf.ready();
+      console.log(" Loading disease detection model")
+
+      const jsonmodel = await require("../../assets/model/model.json");
+      const modelweights = await require("../../assets/model/group1-shard.bin");
+      const leafDetector = await tf.loadLayersModel(bundleResourceIO(jsonmodel,modelweights));
+      
+      setleafDetector(leafDetector)
+      console.log("Model loaded");
+    }
+    loadModel()
+}, []);
+
 
 TouchableOpacity.defaultProps = { activeOpacity: 0.7};
 
-const styles = StyleSheet.create({
-    screenContainer: {
-      
-        marginTop: 120,
-       marginLeft: -30,
-        width: "80%",
-       justifyContent: "center",
-       alignItems:'center',
-       position:"absolute",
-        padding:17,
-
-    },
-    screenContainer2: {
-        marginTop: 120,
-        marginLeft: 150,
-        width: "80%",
-       justifyContent: "center",
-       alignItems:'center',
-       position:"absolute",
-        padding:17,
-        
-    },
-    appButtonContainer: {
-       
-        width:"80%",
-      elevation: 8,
-      backgroundColor: "#009688",
-      borderRadius: 25,
-      paddingVertical: 10,
-      paddingHorizontal: 30
-    },
-
-    appButtonText: {
-      fontSize: 15,
-      color: "#fff",
-      fontWeight: "bold",
-      alignSelf: "center",
-      textTransform: "uppercase"
-    }
-  });
 
 const AppButton = ({ onPress, title }) => (
     <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
@@ -54,20 +44,35 @@ const AppButton = ({ onPress, title }) => (
     </TouchableOpacity>
   );
 
+//choosing image from gallery
 const pickFromGallery = async ()=>{
     const {granted} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
     if(granted){
-         let data =  await ImagePicker.launchImageLibraryAsync({
+        try{
+        let data =  await ImagePicker.launchImageLibraryAsync({
               mediaTypes:ImagePicker.MediaTypeOptions.Images,
               allowsEditing:true,
               aspect:[1,1],
               quality:0.5
           })
-       
-    }else{
+
+          if(!data.cancelled){
+            const source = {uri : data.uri}
+            setImage(source)
+            classifyImage()
+        }
+
+    else{
        Alert.alert("you need to give up permission to work")
     }
+}
+    catch(error){
+        console.log(error)
+    }
  }
+}
+
+ // clicking image from camera
  const pickFromCamera = async ()=>{
     const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
     if(granted){
@@ -77,13 +82,63 @@ const pickFromGallery = async ()=>{
               aspect:[1,1],
               quality:0.5
           })
+
+          if(!data.cancelled){
+              const source = {uri : data.uri}
+              setImage(source)
+              //classifyImage()
+          }
       
     }else{
        Alert.alert("you need to give up permission to work")
     }
  }
+ 
+ //convert image to tensor
+imageToTensor = (rawImage) =>{
+    try {
+      const TO_UINT8ARRAY = true;
+      const { width, height, data } = jpeg.decode(rawImage, TO_UINT8ARRAY);
+      console.log("decoded")
+      //Drop the alpha channel info for mobilenet
+      const buffer = new Uint8Array(width * height * 3);
+      let offset = 0; // offset into original data
+      for (let i = 0; i < buffer.length; i += 3) {
+        buffer[i] = data[offset];
+        buffer[i + 1] = data[offset + 1];
+        buffer[i + 2] = data[offset + 2];
+        offset += 4;
+      }
+      console.log("buffer ready")
+      return tf.tensor3d(buffer, [height, width, 3]);
+          
+        
+      } catch (error) {
+        console.log(error)
+        alert('Image Upload failed')
+      }
+}
 
-const Home = () =>{
+//classify image
+classifyImage = async()=>{
+    try{
+        const imageAssetPath = Image.resolveAssetSource(image)
+        const response = await await FileSystem.readAsStringAsync(imageAssetPath.uri,  {
+            encoding: FileSystem.EncodingType.Base64,
+          })
+        const rawImage = tf.util.encodeString(response, 'base64').buffer;
+        const raw = new Uint8Array(rawImage)
+        const imageTensor = decodeJpeg(raw).resizeBilinear([224,224]).reshape([1,224,224,3]).div(tf.scalar(255))
+        const disease = await leafDetector.predict(imageTensor).data()
+        console.log(disease)
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+
+// UI
     return(
         <View style = {{
             backgroundColor: "#eeeeee",
@@ -91,7 +146,7 @@ const Home = () =>{
         }}>
             <View style={{
                 backgroundColor: "#00a46c",
-                height: "28%",
+                height: hp("25%"),
                 borderBottomRightRadius:30,
                 paddingHorizontal:20
             }}>
@@ -111,8 +166,8 @@ const Home = () =>{
                 }}>
                     <View style={{width:"50%"}}>
                         <Text style={{
-                            marginTop:30,
-                            fontSize:28,
+                            marginTop:hp("0.4%"),
+                            fontSize:hp("4.8%"),
                             color:"#FFF",
                             fontWeight:"bold"
                         }}>VineDoc</Text>
@@ -127,15 +182,16 @@ const Home = () =>{
                 right:0,
                 height:90,
                 marginTop:-45
+                
             }}
            >
                <View style={{
                    backgroundColor:"#FFF",
-                    paddingVertical:8,
+                    paddingVertical:hp("0.5%"),
                    paddingHorizontal:20,
                    marginHorizontal:20,
                    borderRadius:15,
-                   marginTop:25,
+                   marginTop:hp("4.8%"),
                    flexDirection:"row",
                    alignItems:"center"
                }}>
@@ -157,14 +213,31 @@ const Home = () =>{
             
             <View style={{
                 backgroundColor:"#FFF",
-                height: "27%",
+                height: hp("23%"),
                 paddingHorizontal:30,
                 marginHorizontal: 10,
                 borderRadius:10,
                 marginTop: 40,
                
             }}>
-               
+             
+            <View style={{flexDirection: 'row',height: "18%"
+            }}>
+            <Image
+                    source={require('../images/leaf.jpg')}
+                    style={{height:hp("10%"),width:wp("15%"),
+                    
+                    }}></Image>
+                   
+           
+           <Image
+                    source={require('../images/nn.png')}
+                    style={{height:hp("10%"),width:wp("17%"),
+                   
+                    
+                    }}
+                   />
+            </View>
 
                 <View style={styles.screenContainer}>
                     <AppButton title="Camera" size="sm" backgroundColor="#007bff" onPress={() => pickFromCamera()}  />
@@ -193,5 +266,53 @@ const Home = () =>{
         </View>
     )
 }
+
+
+
+const styles = StyleSheet.create({
+    screenContainer: {
+      
+        marginTop: hp("12%"),
+       marginLeft: -30,
+        width: "80%",
+       justifyContent: "center",
+       alignItems:'center',
+       position:"absolute",
+        padding:15,
+
+    },
+    screenContainer2: {
+        marginTop: hp("12%"),
+        marginLeft: wp("37%"),
+        width: "80%",
+       justifyContent: "center",
+       alignItems:'center',
+       position:"absolute",
+        padding:15,
+        
+    },
+
+    view1: {
+        marginLeft : 150
+        
+    },
+    appButtonContainer: {
+       
+        width:"80%",
+      elevation: 8,
+      backgroundColor: "#009688",
+      borderRadius: 25,
+      paddingVertical: 7,
+      paddingHorizontal: 30
+    },
+
+    appButtonText: {
+      fontSize: 15,
+      color: "#fff",
+      fontWeight: "bold",
+      alignSelf: "center",
+      textTransform: "uppercase"
+    }
+  });
 
 export default Home;
