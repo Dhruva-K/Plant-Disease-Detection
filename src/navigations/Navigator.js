@@ -3,8 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import Home from '../screens/Home'
 import {Image} from 'react-native'
+import Youtube from '../screens/Youtube'
 
-const Tab = createBottomTabNavigator();
+
 const BottomTabNavigator = () => {
     return(
         <Tab.Navigator
@@ -48,5 +49,6 @@ const HomeStackNavigator = () => {
         </Stack.Navigator>
     )
 }
+
 
 export default HomeStackNavigator;

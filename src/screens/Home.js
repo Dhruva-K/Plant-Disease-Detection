@@ -13,10 +13,14 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
    } from 'react-native-responsive-screen'
+   import { SafeAreaView, StatusBar } from 'react-native'
+   import WebView from 'react-native-webview'
+   
 
-function Home(){
 
-    // const [disease,setDisease]  = useState("Disease could not be identified");
+function Home({ navigation }){
+
+    const [disease ,setDisease]  = useState();
     const [image,setImage] = useState("")
     const [leafDetector, setleafDetector] = useState("")
   useEffect(()=>{
@@ -86,7 +90,7 @@ const pickFromGallery = async ()=>{
           if(!data.cancelled){
               const source = {uri : data.uri}
               setImage(source)
-              //classifyImage()
+              classifyImage()
           }
       
     }else{
@@ -129,14 +133,37 @@ classifyImage = async()=>{
         const rawImage = tf.util.encodeString(response, 'base64').buffer;
         const raw = new Uint8Array(rawImage)
         const imageTensor = decodeJpeg(raw).resizeBilinear([224,224]).reshape([1,224,224,3]).div(tf.scalar(255))
-        const disease = await leafDetector.predict(imageTensor).data()
-        console.log(disease)
+        const result = await leafDetector.predict(imageTensor).data()
+        let i = result.indexOf(Math.max(...result))
+        if(i == 0 ){
+            navigation.navigate("Disease",{ dis: "Black Rot"})
+        }
+        else if(i== 1){
+            navigation.navigate("Disease",{ dis: "Black Measles"})
+        }
+        else if(i== 2){
+            navigation.navigate("Disease",{ dis: "Leaf Blight"})
+        }
+        else{
+            navigation.navigate("Disease",{ dis: "Healthy"})
+        }
+       
+       
     }
     catch(error){
         console.log(error)
     }
 }
+YoutubeActivity = ()=>{
 
+    return (
+        <>
+          <SafeAreaView style={styles.flexContainer}>
+            <WebView source={{ uri: 'https://heartbeat.fritz.ai/' }} />
+          </SafeAreaView>
+        </>
+      )
+}
 
 // UI
     return(
@@ -146,7 +173,7 @@ classifyImage = async()=>{
         }}>
             <View style={{
                 backgroundColor: "#00a46c",
-                height: hp("25%"),
+                height: hp("28%"),
                 borderBottomRightRadius:30,
                 paddingHorizontal:20
             }}>
@@ -211,45 +238,60 @@ classifyImage = async()=>{
                </View>
             </LinearGradient>
             
+
+        <View style={{ height: hp("34%"), backgroundColor:"#eeeeee"}}>
+        <View>
+                <Text>Heal your crop</Text>
+            </View>
             <View style={{
                 backgroundColor:"#FFF",
-                height: hp("23%"),
-                paddingHorizontal:30,
-                marginHorizontal: 10,
-                borderRadius:10,
-                marginTop: 40,
+                flex:1,
+                borderRadius: 10,
+                marginBottom:0,
+                margin:7
+                
                
             }}>
-             
-            <View style={{flexDirection: 'row',height: "18%"
-            }}>
-            <Image
-                    source={require('../images/leaf.jpg')}
-                    style={{height:hp("10%"),width:wp("15%"),
-                    
-                    }}></Image>
-                   
-           
-           <Image
-                    source={require('../images/nn.png')}
-                    style={{height:hp("10%"),width:wp("17%"),
-                   
-                    
-                    }}
-                   />
+
+            <View style={{flexDirection:"column",height:"100%"}}>
+
+                <View style={{flex:1.8, flexDirection:"row",justifyContent:"space-evenly",marginTop:10}}>
+                    <View style = {{flex:1, alignItems:'center', flexDirection: 'column'}}>
+                        <Image
+                        source={require('../images/Untitleddis3.png')}
+                        style={{height:"45%",width:"54%", marginTop:10
+                        
+                        }}></Image>
+                        <Text style={{color: "black",textAlign:'center'}}>Click or select a photo</Text>
+                    </View>
+                    <View style = {{flex:1,  alignItems:'center', flexDirection: 'column'}}>
+                        <Image
+                        source={require('../images/neural1.jpg')}
+                        style={{height:"40%",width:"45%", marginTop:10
+                        
+                        }}></Image>
+                        <Text style={{color: "black",textAlign:'center',marginTop:16}}>Click or select a photo</Text>
+                    </View>
+                    <View style = {{flex:1,alignItems:'center', flexDirection: 'column'}}>
+                        <Image
+                            source={require('../images/Untitleddiag.jpg')}
+                            style={{height:"50%",width:"50%", marginTop:10
+                            
+                            }}></Image>
+                            <Text style={{color: "black",textAlign:'center',marginTop:7}}>Click or select a photo</Text>
+                    </View>
+
+                </View>
+
+                <View style={{flex : 0.5, flexDirection: "row", justifyContent:"space-evenly",marginBottom:10}}>
+                    <AppButton title="Camera" size="sm" backgroundColor="#007bff" onPress={() => pickFromCamera()}  />
+                    <AppButton title="Gallery" size="sm" backgroundColor="#007bff" onPress={() => pickFromGallery()}  />
+                </View>
+
             </View>
 
-                <View style={styles.screenContainer}>
-                    <AppButton title="Camera" size="sm" backgroundColor="#007bff" onPress={() => pickFromCamera()}  />
-                
-                    </View>
-
-                    <View style={styles.screenContainer2}>
-                    <AppButton title="Gallery" size="sm" backgroundColor="#007bff" onPress={() => pickFromGallery()}  />
-                    </View>
-                
-               
-                
+            
+            </View> 
             </View>
             <LinearGradient
             colors={["rgba(180,180,180,0.2)", "transparent"]}
@@ -263,8 +305,22 @@ classifyImage = async()=>{
                 borderRadius:10
             }}
            ></LinearGradient>
+        
+        <View style={{marginTop:50}}>
+                    <AppButton title="Youtube" size="sm" backgroundColor="#007bff" onPress={() => {navigation.navigate("Disease",{dis: "Hello"})}}  />
+                
+                    </View>
         </View>
+
     )
+    // return (
+    //     <>
+    //       <StatusBar barStyle='dark-content' />
+    //       <SafeAreaView style={styles.flexContainer}>
+    //         <WebView source={{ uri: 'https://www.youtube.com/results?search_query=grape+leaf+blight+treatment' }} />
+    //       </SafeAreaView>
+    //     </>
+    //   )
 }
 
 
@@ -298,12 +354,14 @@ const styles = StyleSheet.create({
     },
     appButtonContainer: {
        
-        width:"80%",
+        width:"100%",
       elevation: 8,
       backgroundColor: "#009688",
       borderRadius: 25,
-      paddingVertical: 7,
-      paddingHorizontal: 30
+      padding:7,
+      paddingLeft:30,
+      paddingRight:30
+      
     },
 
     appButtonText: {
@@ -312,7 +370,10 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       alignSelf: "center",
       textTransform: "uppercase"
-    }
+    },
+    flexContainer: {
+        flex: 1
+      }
   });
 
 export default Home;
