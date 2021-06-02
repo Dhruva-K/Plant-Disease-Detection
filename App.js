@@ -5,6 +5,7 @@ import HomeStackNavigator from './src/navigations/Navigator'
 
 import Home from "./src/screens/Home"
 import Disease from './src/screens/Disease'
+import Youtube from "./src/screens/Youtube"
 
 const Stack = createStackNavigator();
 function App() {
@@ -12,7 +13,7 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator 
+      {/* <Stack.Navigator 
         screenOptions={{
           headerShown: false
         }}
@@ -21,7 +22,9 @@ function App() {
           <Stack.Screen name = "Home" component = {Home} options = {{ headerShown:false}}/>
 
           <Stack.Screen name = "Disease" component = {Disease} options={{headerShown:false}}/> 
-        </Stack.Navigator>
+          <Stack.Screen name = "Youtube" component = {Youtube} options={{headerShown:true}}/> 
+        </Stack.Navigator> */}
+        <HomeStackNavigator/>
   </NavigationContainer>
   )
 }

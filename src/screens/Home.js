@@ -15,12 +15,17 @@ import {
    } from 'react-native-responsive-screen'
    import { SafeAreaView, StatusBar } from 'react-native'
    import WebView from 'react-native-webview'
+
+import { SliderBox } from "react-native-image-slider-box";
+import data from "../Data/Data"
+import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading'
    
 
 
 function Home({ navigation }){
 
-    const [disease ,setDisease]  = useState();
+    //const [disease ,setDisease]  = useState();
     const [image,setImage] = useState("")
     const [leafDetector, setleafDetector] = useState("")
   useEffect(()=>{
@@ -136,16 +141,16 @@ classifyImage = async()=>{
         const result = await leafDetector.predict(imageTensor).data()
         let i = result.indexOf(Math.max(...result))
         if(i == 0 ){
-            navigation.navigate("Disease",{ dis: "Black Rot"})
+            navigation.navigate("Disease",{ dis: "Black Rot",info: data[2]})
         }
         else if(i== 1){
-            navigation.navigate("Disease",{ dis: "Black Measles"})
+            navigation.navigate("Disease",{ dis: "Black Measles", info: data[0]})
         }
         else if(i== 2){
-            navigation.navigate("Disease",{ dis: "Leaf Blight"})
+            navigation.navigate("Disease",{ dis: "Leaf Blight", info: data[1]})
         }
         else{
-            navigation.navigate("Disease",{ dis: "Healthy"})
+            navigation.navigate("Disease",{ dis: "Healthy",info: data[3]})
         }
        
        
@@ -165,11 +170,34 @@ YoutubeActivity = ()=>{
       )
 }
 
+const fetchFonts = () => {
+    return Font.loadAsync({
+    'Pangolin-Regular': require('../../assets/fonts/Pangolin-Regular.ttf'),
+    });
+    };
+const [fontloaded,setfontloaded]=useState(false);
+
+if(!fontloaded){
+    return(
+      <AppLoading
+      startAsync={fetchFonts}
+      onFinish={()=>{setfontloaded(true)}}
+      onError={console.warn}/>
+    )
+  }
+
+const imageslide = [
+    require('../images/Untitledfm13.jpg'),
+    require('../images/Untitledfm15.jpg'),
+   
+]
+
 // UI
     return(
         <View style = {{
             backgroundColor: "#eeeeee",
             flex:1
+           
         }}>
             <View style={{
                 backgroundColor: "#00a46c",
@@ -193,10 +221,10 @@ YoutubeActivity = ()=>{
                 }}>
                     <View style={{width:"50%"}}>
                         <Text style={{
-                            marginTop:hp("0.4%"),
-                            fontSize:hp("4.8%"),
+                            marginTop:hp("2.5%"),
+                            fontSize:hp("4%"),
                             color:"#FFF",
-                            fontWeight:"bold"
+                            fontFamily:"Pangolin-Regular"
                         }}>VineDoc</Text>
                     </View>
                 </View>
@@ -218,16 +246,17 @@ YoutubeActivity = ()=>{
                    paddingHorizontal:20,
                    marginHorizontal:20,
                    borderRadius:15,
-                   marginTop:hp("4.8%"),
+                   marginTop:hp("3.5%"),
                    flexDirection:"row",
                    alignItems:"center"
                }}>
                    <TextInput
                         placeholder="Search"
                         placeholderTextColor="#b1e5d3"
+                        keyboardType="numeric"
                         style={{
                             fontWeight:"bold",
-                            fontSize:18,
+                            fontSize:16,
                             width:261
                         }}
                    />
@@ -239,9 +268,9 @@ YoutubeActivity = ()=>{
             </LinearGradient>
             
 
-        <View style={{ height: hp("34%"), backgroundColor:"#eeeeee"}}>
+        <View style={{ height: hp("34%"), backgroundColor:"#eeeeee", marginTop: hp("3%")}}>
         <View>
-                <Text>Heal your crop</Text>
+                <Text style= {{ marginLeft:12,fontSize:15, fontFamily:"Pangolin-Regular", color:"#009688"}}>Heal your crop!</Text>
             </View>
             <View style={{
                 backgroundColor:"#FFF",
@@ -262,15 +291,15 @@ YoutubeActivity = ()=>{
                         style={{height:"45%",width:"54%", marginTop:10
                         
                         }}></Image>
-                        <Text style={{color: "black",textAlign:'center'}}>Click or select a photo</Text>
+                        <Text style={{color: "#0A0637",textAlign:'center', fontSize:11,margin:9}}>Click or select a photo</Text>
                     </View>
                     <View style = {{flex:1,  alignItems:'center', flexDirection: 'column'}}>
                         <Image
                         source={require('../images/neural1.jpg')}
-                        style={{height:"40%",width:"45%", marginTop:10
+                        style={{height:"40%",width:"48%", marginTop:10
                         
                         }}></Image>
-                        <Text style={{color: "black",textAlign:'center',marginTop:16}}>Click or select a photo</Text>
+                        <Text style={{color: "#0A0637",textAlign:'center',fontSize:11,margin:9,marginTop:19}}>Disease would be detected</Text>
                     </View>
                     <View style = {{flex:1,alignItems:'center', flexDirection: 'column'}}>
                         <Image
@@ -278,7 +307,7 @@ YoutubeActivity = ()=>{
                             style={{height:"50%",width:"50%", marginTop:10
                             
                             }}></Image>
-                            <Text style={{color: "black",textAlign:'center',marginTop:7}}>Click or select a photo</Text>
+                            <Text style={{color: "#0A0637",textAlign:'center',fontSize:11,margin:9,marginTop:0}}>See diagnosis</Text>
                     </View>
 
                 </View>
@@ -305,12 +334,49 @@ YoutubeActivity = ()=>{
                 borderRadius:10
             }}
            ></LinearGradient>
+
+           <View style={{
+               height: hp("25%") ,marginTop: 30
+           }}
+           
+           >
+           <View style={{display:"flex",flexDirection:'row', alignItems:"center"}}>
+               <Text style={{marginLeft:12,fontSize:15, fontFamily:"Pangolin-Regular", color:"#009688"}}>
+                   Tip of the Day!
+               </Text>
+               <Image
+                    source={require('../images/lightbulb.png')}
+                    style={{height:25,width:25}}
+                   />
+           </View>
+                <SliderBox
+                images={imageslide}
+                dotColor="#356B51"
+                inactiveDotColor="#FFF"
+                paginationBoxVerticalPadding={10}
+                 //autoplay
+                //circleLoop
+                ImageComponentStyle={{borderRadius: 10, width: '95%', marginTop: 5, height: 180}}
+/>
+<LinearGradient
+            colors={["rgba(170,180,180,0.2)", "transparent"]}
+            style={{
+                left:15,
+                right:0,
+                
+                marginRight:33,
+                height:7,
+                marginTop:0,
+                borderRadius:10
+            }}
+           ></LinearGradient>
+           </View>
         
-        <View style={{marginTop:50}}>
+        {/* <View style={{marginTop:50}}>
                     <AppButton title="Youtube" size="sm" backgroundColor="#007bff" onPress={() => {navigation.navigate("Disease",{dis: "Hello"})}}  />
                 
-                    </View>
-        </View>
+                    </View>*/}
+        </View> 
 
     )
     // return (
@@ -365,7 +431,7 @@ const styles = StyleSheet.create({
     },
 
     appButtonText: {
-      fontSize: 15,
+      fontSize: 13,
       color: "#fff",
       fontWeight: "bold",
       alignSelf: "center",
