@@ -24,23 +24,16 @@ function Calculator() {
     const [ans2,setAns2] = useState(0);
     
 
-    // useEffect(()=>{
-        
-    // },[res])
 
     const add =async()=>{
         var res = (Number(num1)* Number(num))
-        console.log(res)
         var trees = (Math.round(43560/res))
-        console.log(trees)
-        setAns1((205/trees).toFixed(2))
-        console.log(ans1)
-        setAns2((152/trees).toFixed(2))
-        console.log(ans2)
+        setAns1((205/trees).toFixed(2)*454)
+        // console.log(ans1)
+        setAns2((152/trees).toFixed(2)*454)
+        // console.log(ans2)
     }
-    // const grams =async()=>{
-    //     setAns1(ans1*454)
-    // }
+   
     TouchableOpacity.defaultProps = { activeOpacity: 0.7};
 
 
@@ -65,16 +58,24 @@ function Calculator() {
     return (
         <View>
         <View style = {{
-            backgroundColor:"white",
-            height:(hp("30%")),
+            backgroundColor:"#FFF",
+            height:(hp("25%")),
             display: "flex",
-            justifyContent:"center"
+            justifyContent:"center",
+            
+            // borderBottomLeftRadius: 25,
+            // borderBottomRightRadius: 25,
+            flexDirection:'row',
+            alignItems: "center",
+            elevation:5,
+            zIndex: -1
             
         }}>
-        <Text style={{color:"black",fontSize:25}}>Fertilizer Calculator</Text>
+        <Text style={{color:"#00a46c",fontSize:24, fontFamily:"Pangolin-Regular", paddingLeft:10}}>Fertilizer Calculator</Text>
+        <Image source={require('../images/Calculator-rafiki.png')} style={{height:140, width:120,alignSelf:"center"}}></Image>
         </View>
 
-        <View style={{backgroundColor:"white", display:"flex",flexDirection:"column",padding:10,margin:10,marginTop:20,borderRadius:5}}>
+        <View style={{backgroundColor:"white", display:"flex",flexDirection:"column",padding:10,margin:10,marginTop:25,borderRadius:5}}>
             <Text style={{color:"#009688", fontSize:20, fontFamily:"Pangolin-Regular"}}>Spacing in feet</Text>
        
        <View style={{ flexDirection:"row", justifyContent:"space-around",marginTop:10}}>
@@ -154,7 +155,7 @@ function Calculator() {
                 alignItems:"center",
                 marginTop:10
             }}>
-           <Text style={{color:"#009688", fontSize:20}}>{ans1} lbs</Text>
+           <Text style={{color:"#009688", fontSize:20}}>{ans1} gms</Text>
             </View>
         </View>
 
@@ -168,7 +169,7 @@ function Calculator() {
                 alignItems:"center",
                 marginTop:10
             }}>
-           <Text style={{color:"#009688", fontSize:20}}>{ans2} lbs</Text>
+           <Text style={{color:"#009688", fontSize:20}}>{ans2} gms</Text>
             </View>
         </View>
           

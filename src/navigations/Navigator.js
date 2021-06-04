@@ -29,8 +29,8 @@ const BottomTabNavigator = () => {
                     tabBarLabel:"",
                     tabBarIcon:({color, size}) => (
                         <Image
-                            source={require("../images/8.png")}
-                            style={{ height:20, width:20 }}
+                            source={require("../images/home.png")}
+                            style={{ height:29, width:28 }}
                         />
                     )
                 }}
@@ -43,21 +43,21 @@ const BottomTabNavigator = () => {
                     tabBarLabel:"",
                     tabBarIcon:({color, size}) => (
                         <Image
-                            source={require("../images/9.png")}
-                            style={{ height:20, width:25 }}
+                            source={require("../images/icon1.png")}
+                            style={{ height:29, width:25 }}
                         />
                     )
                 }}
             />
            <Tab.Screen
-                name="Profile"
+                name="Shop"
                 component={Shop}
                 options={{
                     tabBarLabel:"",
                     tabBarIcon:({color, size}) => (
                         <Image
-                            source={require("../images/10.png")}
-                            style={{ height:20, width:20 }}
+                            source={require("../images/shopping-cart.png")}
+                            style={{ height:26, width:27 }}
                         />
                     )
                 }}

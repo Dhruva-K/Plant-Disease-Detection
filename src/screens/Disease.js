@@ -47,7 +47,7 @@ function Disease({ route,navigation }) {
                             height:"100%",
                             
                         }}>
-                            <Text style={{color: "white",zIndex: 1,top: hp("17"), left: 40, fontSize:24 }}>
+                            <Text style={{color: "white",zIndex: 1,top: hp("17"), alignSelf:"center",fontFamily:"Pangolin-Regular", fontSize:30 }}>
                         {dis}
                     </Text>
                         </ImageBackground>
@@ -65,7 +65,7 @@ function Disease({ route,navigation }) {
                             height:"100%",
                             
                         }}>
-                            <Text style={{color: "white",zIndex: 1,top: hp("17"),alignSelf:"center", fontSize:24 }}>
+                            <Text style={{color: "white",zIndex: 1,top: hp("17"), alignSelf:"center",fontFamily:"Pangolin-Regular", fontSize:30 }}>
                         {dis}
                     </Text>
                         </ImageBackground>
@@ -82,7 +82,7 @@ function Disease({ route,navigation }) {
                             height:"100%"
                             
                         }}>
-                            <Text style={{color: "white",zIndex: 1,top: 80, left: 40, fontSize:24}}>
+                            <Text style={{color: "white",zIndex: 1,top: hp("17"), alignSelf:"center",fontFamily:"Pangolin-Regular", fontSize:30}}>
                         {dis}
                     </Text>
                         </ImageBackground>

@@ -159,16 +159,7 @@ classifyImage = async()=>{
         console.log(error)
     }
 }
-YoutubeActivity = ()=>{
 
-    return (
-        <>
-          <SafeAreaView style={styles.flexContainer}>
-            <WebView source={{ uri: 'https://heartbeat.fritz.ai/' }} />
-          </SafeAreaView>
-        </>
-      )
-}
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -194,7 +185,7 @@ const imageslide = [
 
 // UI
     return(
-        <View style = {{
+        <ScrollView style = {{
             backgroundColor: "#eeeeee",
             flex:1
            
@@ -268,7 +259,7 @@ const imageslide = [
             </LinearGradient>
             
 
-        <View style={{ height: hp("34%"), backgroundColor:"#eeeeee", marginTop: hp("3%")}}>
+        <View style={{ height: hp("34%"), backgroundColor:"#eeeeee", marginTop: hp("2%")}}>
         <View>
                 <Text style= {{ marginLeft:12,fontSize:15, fontFamily:"Pangolin-Regular", color:"#009688"}}>Heal your crop!</Text>
             </View>
@@ -307,7 +298,7 @@ const imageslide = [
                             style={{height:"50%",width:"50%", marginTop:10
                             
                             }}></Image>
-                            <Text style={{color: "#0A0637",textAlign:'center',fontSize:11,margin:9,marginTop:0}}>See diagnosis</Text>
+                            <Text style={{color: "#0A0637",textAlign:'center',fontSize:11,margin:9,marginTop:10}}>See diagnosis</Text>
                     </View>
 
                 </View>
@@ -336,17 +327,17 @@ const imageslide = [
            ></LinearGradient>
 
            <View style={{
-               height: hp("25%") ,marginTop: 30
+               height: hp("26%") ,marginTop: 17
            }}
            
            >
            <View style={{display:"flex",flexDirection:'row', alignItems:"center"}}>
-               <Text style={{marginLeft:12,fontSize:15, fontFamily:"Pangolin-Regular", color:"#009688"}}>
+               <Text style={{marginLeft:12,fontSize:15, fontFamily:"Pangolin-Regular", color:"#009688",marginBottom:5}}>
                    Tip of the Day!
                </Text>
                <Image
                     source={require('../images/lightbulb.png')}
-                    style={{height:25,width:25}}
+                    style={{height:25,width:25,marginBottom:5}}
                    />
            </View>
                 <SliderBox
@@ -354,9 +345,10 @@ const imageslide = [
                 dotColor="#356B51"
                 inactiveDotColor="#FFF"
                 paginationBoxVerticalPadding={10}
-                 //autoplay
-                //circleLoop
-                ImageComponentStyle={{borderRadius: 10, width: '95%', marginTop: 5, height: 180}}
+                
+                autoplay
+                circleLoop
+                ImageComponentStyle={{borderRadius: 10, width: '95%', marginTop: 10, height: 150,marginBottom:70}}
 />
 <LinearGradient
             colors={["rgba(170,180,180,0.2)", "transparent"]}
@@ -376,7 +368,7 @@ const imageslide = [
                     <AppButton title="Youtube" size="sm" backgroundColor="#007bff" onPress={() => {navigation.navigate("Disease",{dis: "Hello"})}}  />
                 
                     </View>*/}
-        </View> 
+        </ScrollView> 
 
     )
     // return (
