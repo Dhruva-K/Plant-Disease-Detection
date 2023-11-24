@@ -258,7 +258,7 @@ const imageslide = [
                </View>
             </LinearGradient>
             
-
+        
         <View style={{ height: hp("34%"), backgroundColor:"#eeeeee", marginTop: hp("2%")}}>
         <View>
                 <Text style= {{ marginLeft:12,fontSize:15, fontFamily:"Pangolin-Regular", color:"#009688"}}>Heal your crop!</Text>
