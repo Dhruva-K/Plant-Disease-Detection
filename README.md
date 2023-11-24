@@ -20,6 +20,8 @@ The app also has a fertilizer calculator to aid farmers in deciding the precise 
 https://docs.google.com/presentation/d/1siCi180ikG7jpn9v47-Jml86bjQL4_fj/edit?usp=sharing&ouid=111305218716756672370&rtpof=true&sd=true
 
 <h2>Screenshots of the App</h2>
+
+
 ![image](https://github.com/Dhruva-K/Plant-Disease-Detection/assets/67596787/98fbed89-f7dd-4c3f-8633-90bdd8b98948) 
 ![image](https://github.com/Dhruva-K/Plant-Disease-Detection/assets/67596787/06713bac-22c8-4bf6-a6bf-09e121571701)
 ![image](https://github.com/Dhruva-K/Plant-Disease-Detection/assets/67596787/d67184af-68aa-4b5c-b155-306274fbaa7e) 
